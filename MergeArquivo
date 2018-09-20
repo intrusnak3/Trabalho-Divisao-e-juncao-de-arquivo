@@ -1,0 +1,80 @@
+package ordenaArquivos;
+
+import java.io.RandomAccessFile;
+
+public class MergeArquivo {
+	
+	public static void main(String[] args) throws Exception {
+		
+		RandomAccessFile A = new RandomAccessFile("cep_ordem1.dat","r");
+		RandomAccessFile B = new RandomAccessFile("cep_ordem2.dat","r");
+		
+        if (A.length() == 0) {
+        	A.close();
+        	B.close();
+            throw new RuntimeException("o arquivo 1 esta vazio.");}
+        if (B.length() == 0) {
+           	A.close();
+        	B.close();
+            throw new RuntimeException("o arquivo 2 esta vazio.");}
+       
+        RandomAccessFile C = new RandomAccessFile("cep_ordenado_novo.dat","rw");    
+        Endereco e = new Endereco();
+		Endereco f = new Endereco();
+		byte[] x = new byte[300];    
+		long inicioA = 0;
+		long inicioB = 0;
+		long fimA = A.length() - 1;
+		long fimB = B.length() - 1;
+		A.seek(0);
+		B.seek(0);
+
+		System.out.println("Ordenando arquivo.. ");
+		
+		while ((inicioA <= (fimA)) && (inicioB <= (fimB))) { //comparacao inicial
+			A.seek(inicioA);
+			B.seek(inicioB);
+			e.leEndereco(A);
+			f.leEndereco(B);
+			
+			if ((e.getCep().compareTo(f.getCep())) < 0){
+				  A.seek(inicioA);
+				  A.readFully(x);			  
+				  C.write(x);
+				  inicioA += 300;
+			}
+			else {
+				B.seek(inicioB);
+				B.readFully(x);
+				C.write(x);
+				inicioB += 300;
+			}
+//			System.out.println("teste 1: "+A.getFilePointer()+"  "+B.getFilePointer());
+			
+		}
+		while (inicioB < B.length()) {     //caso B seja maior que A
+//		System.out.println("teste2: "+inicioB);
+			B.seek(inicioB);
+			B.readFully(x);
+			C.write(x);
+			inicioB += 300;
+
+		}
+			
+		
+		while (inicioA < A.length()) {     //caso A seja maior que B
+//		System.out.println("teste3: "+inicioA);
+			A.seek(inicioA);
+			A.readFully(x);
+			C.write(x);
+			inicioA += 300;
+
+		}
+	System.out.println("Ordenação efetuada com sucesso.");
+		
+    A.close();
+    B.close();
+    C.close();
+	}
+
+}

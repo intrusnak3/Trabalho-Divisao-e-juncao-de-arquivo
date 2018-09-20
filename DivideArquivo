@@ -1,11 +1,11 @@
-package dividir;
+package ordenaArquivos;
 
 import java.io.RandomAccessFile;
 import java.util.Random;
 
 
 
-public class Principal {
+public class DivideArquivo {
 
 	 public static void main(String[] args) throws Exception {
 	        
@@ -14,32 +14,32 @@ public class Principal {
 	        byte e[] = new byte[300];
 	        if (f.length() == 0) {
 	        	f.close();
-	            throw new RuntimeException("o arquivo esta vazio.");
-	            
+	            throw new RuntimeException("o arquivo esta vazio.");	            
 	        }
 	        RandomAccessFile A = new RandomAccessFile("cep_ordem1.dat","rw");
 	        RandomAccessFile B = new RandomAccessFile("cep_ordem2.dat","rw");
 	        long inicio = 0;
 	        Random randomno = new Random(); //criando objeto
-	 
-	        while (f.getFilePointer()<=f.length()) {
+	        System.out.println("Gerando arquivos...");
+	        
+	        while (f.getFilePointer()< f.length()) {
 	        	f.seek(inicio);
 	        	f.readFully(e);
 	        	
-	        	boolean valor = randomno.nextBoolean(); //gerar o valor
+	        	boolean valor = randomno.nextBoolean(); 
 	        	if (valor) {
-	        		A.write(e); //preciso achar uma maneira de ler o byte
+	        		A.write(e);
 	        		inicio+=300;
 	        	}
 	        	else{
 	        		B.write(e);
 	        		inicio+=300;
 	        	}
-	        	
+	        }       	
 		  f.close();
 		  A.close();
 		  B.close();
-	 }
+		  System.out.println("Os arquivos foram gerados com sucesso.");
 	 }
 
 }
